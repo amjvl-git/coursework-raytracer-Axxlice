@@ -83,7 +83,10 @@ class Sphere
     // a quadratic equation and return the t value of the ray for that point
     // If two solutions exist return the minus solution
     // If no solutions exist return -1
-    rayIntersects(ray)  {}
+    rayIntersects(ray)  
+    {
+
+    }
 }
 
 // Ray which has an origin and direction, both are Vec3s
@@ -136,14 +139,19 @@ function traceRay(ray)
 // Calculate and return the background colour based on the ray
 function backgroundColour(ray)
 {
-        return new Vec3(0.3,0.5,0.9) // Blue
+        let white = new Vec3(1, 1, 1)
+        let blue = new Vec3(0.3,0.5,0.9)
+        t = 0.5*(ray.direction.y + 1.0)
+        return white.scale(1-t).add(blue.scale(t))
 }
 
 // Returns the colour the ray should have as a Vec3 with RGB values in [0,1]
 function rayColour(ray) 
 {
     let castResult = traceRay(ray)
+
     if(castResult.t < 0) return backgroundColour(ray)
+
     return new Vec3(1,0,0) // Red
 }
 
@@ -166,7 +174,7 @@ const spheres = new Array(
 // Main code
 let imageWidth = document.getElementById("canvas").width
 let imageHeight = document.getElementById("canvas").height
-let aspectRatio = document.getElementById("canvas").height / document.getElementById("canvas").width
+let aspectRatio = imageHeight / imageWidth
 
 let viewportWidth = 2
 let viewportHeight = viewportWidth * aspectRatio
@@ -174,7 +182,7 @@ let focalLength = 1.0
 
 let camPosition = new Vec3(0,0,0)
 let horizontal = new Vec3(viewportWidth, 0, 0)
-let vertical = new Vec3(0, vieportHeight, 0)
+let vertical = new Vec3(0, viewportHeight, 0)
 let lowerLeftCorner = camPosition.minus(horizontal.scale(0,5)).minus(vertical.scale(0,5)).minus(new Vec3(0, 0, focalLength))
 
 let colour = new Vec3(0,0,0)
