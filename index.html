@@ -85,7 +85,13 @@ class Sphere
     // If no solutions exist return -1
     rayIntersects(ray)  
     {
+        // Discriminate is b^2 - 4ac
+        let discriminate = (ray.direction.y * ray.direction.y)-(4 * ray.direction.x * ray.direction.z)
 
+        if (discriminate = True) 
+        return 
+        else
+        return -1
     }
 }
 
