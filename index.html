@@ -85,13 +85,19 @@ class Sphere
     // If no solutions exist return -1
     rayIntersects(ray)  
     {
-        // Discriminate is b^2 - 4ac
-        let discriminate = (ray.direction.y * ray.direction.y)-(4 * ray.direction.x * ray.direction.z)
+        let a = ray.direction.dot(ray.direction);
+        let b = 2.0 * ray.origin.minus(this.centre).dot(ray.direction);
+        let c = ray.origin.minus(this.centre).dot(ray.origin.minus(this.centre)) - this.radius * this.radius;
 
-        if (discriminate = True) 
-        return 
-        else
-        return -1
+        let discriminant = (b * b) - (4 * a * c);
+        let t = (-b - Math.sqrt(discriminant)) / (2.0 * a);
+
+        if (discriminant < 0) {
+            return -1;
+        }
+        else {
+            return t;
+        }
     }
 }
 
@@ -128,7 +134,13 @@ class RayCastResult
 }
 
 // Calculate the intersection point and normal when a ray hits a sphere. Returns a RayCastResult.
-function hit(ray, t, sphereIndex) {}
+function hit(ray, t, sphereIndex) 
+{
+    let intersectionPoint = ray.origin.add(ray.direction.scale(t))
+    let intersectionNormal = intersectionPoint
+
+    return new RayCastResult(intersectionPoint, intersectionNormal, t, sphereIndex)
+}
 
 // Return a RayCastResult when a ray misses everything in the scene
 function miss()
@@ -139,7 +151,10 @@ function miss()
 // Check whether a ray hits anything in the scene and return a RayCast Result
 function traceRay(ray)
 {
-    return miss()
+    let sphere = spheres[0];
+    let t = sphere.rayIntersects(ray)
+    if(t < 0) return miss()
+    else return hit(ray, t, 0)
 }
 
 // Calculate and return the background colour based on the ray
@@ -156,8 +171,9 @@ function rayColour(ray)
 {
     let castResult = traceRay(ray)
 
-    if(castResult.t < 0) return backgroundColour(ray)
-
+    if(castResult.t < 0){
+        return backgroundColour(ray)
+    }
     return new Vec3(1,0,0) // Red
 }
 
